@@ -12,6 +12,7 @@ public class TrashCleaner : MonoBehaviour
     private Trash currentTrash;
 
     private Coroutine cleaningCoroutine;
+    private int countTrash;
 
     void Start()
     {
@@ -46,6 +47,8 @@ public class TrashCleaner : MonoBehaviour
                 }
             }
         }
+
+        Debug.Log(countTrash);
     }
 
 
@@ -68,7 +71,10 @@ public class TrashCleaner : MonoBehaviour
         // Complete cleanup if timer reached zero
         if (cleanUpSlider.value <= 0)
         {
+
+            // The count trash adds only one point, we can add more points if hard level trash is collected
             Destroy(currentTrash.gameObject);
+            countTrash++;
             currentTrash = null;
             cleanUpSlider.gameObject.SetActive(false);
         }
