@@ -4,52 +4,86 @@ using System.Collections;
 
 public class TrashCleaner : MonoBehaviour
 {
-    public Slider cleanUpSlider;
+    public Slider cleanUpSlider; 
     public KeyCode cleanUpKey = KeyCode.E;
-    private GameObject currentTrash;
+    private Trash currentTrash;
 
-    public float cleanUpSpeed = 50f;
-    public float initialSliderValue = 100f;
+    private Coroutine cleaningCoroutine;
 
     void Start()
     {
         if (cleanUpSlider != null)
         {
             cleanUpSlider.gameObject.SetActive(false);
-            cleanUpSlider.maxValue = initialSliderValue;
-            cleanUpSlider.value = initialSliderValue;
         }
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(cleanUpKey) && currentTrash != null && cleanUpSlider != null)
+        if (currentTrash != null && cleanUpSlider != null)
         {
-            StartCoroutine(CleanUpCoroutine());
+            // Start cleaning when button is held
+            if (Input.GetKey(cleanUpKey))
+            {
+                if (cleaningCoroutine == null) // start once
+                {
+                    cleaningCoroutine = StartCoroutine(CleanUpCoroutine());
+                }
+            }
+            else
+            {
+                // Stop cleaning when button released
+                if (cleaningCoroutine != null)
+                {
+                    StopCoroutine(cleaningCoroutine);
+                    cleaningCoroutine = null;
+                }
+            }
         }
     }
 
     IEnumerator CleanUpCoroutine()
     {
         cleanUpSlider.gameObject.SetActive(true);
-        cleanUpSlider.value = initialSliderValue;
+        cleanUpSlider.maxValue = currentTrash.cleanUpTime;
+        cleanUpSlider.value = currentTrash.cleanUpTime;
 
-        while (cleanUpSlider.value > 0)
+        while (cleanUpSlider.value > 0 && Input.GetKey(cleanUpKey))
         {
-            cleanUpSlider.value -= Time.deltaTime * cleanUpSpeed;
+            cleanUpSlider.value -= Time.deltaTime;
             yield return null;
         }
 
-        Destroy(currentTrash);
-        currentTrash = null;
-        cleanUpSlider.gameObject.SetActive(false);
+        if (cleanUpSlider.value <= 0)
+        {
+            Destroy(currentTrash.gameObject);
+            currentTrash = null;
+            cleanUpSlider.gameObject.SetActive(false);
+        }
+
+        cleaningCoroutine = null;
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Trash"))
         {
-            currentTrash = other.gameObject;
+            currentTrash = other.GetComponent<Trash>();
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Trash") && currentTrash != null && other.gameObject == currentTrash.gameObject)
+        {
+            currentTrash = null;
+            cleanUpSlider.gameObject.SetActive(false);
+
+            if (cleaningCoroutine != null)
+            {
+                StopCoroutine(cleaningCoroutine);
+                cleaningCoroutine = null;
+            }
         }
     }
 }
