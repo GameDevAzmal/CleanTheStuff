@@ -1892,7 +1892,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trashTypes:
-  - prefab: {fileID: 4045562900591284205, guid: c2152f09c299c984da6901f984ff0f2d, type: 3}
+  - prefab: {fileID: 4045562900591284205, guid: fe4c021290d90c044877a7798a5a4c9a, type: 3}
     spawnChance: 0
   areaSize: {x: 22, y: 0, z: 28.63}
   areaCenter: {x: 0, y: 0, z: 0}
