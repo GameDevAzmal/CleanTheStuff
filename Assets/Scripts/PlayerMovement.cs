@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -8,28 +6,16 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody rb;
     private Vector3 movement;
 
-    public Slider cleanUpSlider; // Assign in Inspector
-    public KeyCode cleanUpKey = KeyCode.E;
-    private GameObject currentTrash;
-
-    public float cleanUpSpeed = 50f; // How fast the slider decreases
-    public float initialSliderValue = 100f; // Customize initial value
+    public Transform cameraTransform;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        if (cleanUpSlider != null)
-        {
-            cleanUpSlider.gameObject.SetActive(false); // Hide slider at start
-            cleanUpSlider.maxValue = initialSliderValue;
-            cleanUpSlider.value = initialSliderValue;
-        }
     }
 
     void Update()
     {
         HandleMovementInput();
-        HandleCleanUpInput();
     }
 
     void FixedUpdate()
@@ -39,49 +25,28 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleMovementInput()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.z = Input.GetAxisRaw("Vertical");
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        // Camera-based movement
+        Vector3 camForward = cameraTransform.forward;
+        Vector3 camRight = cameraTransform.right;
+
+        camForward.y = 0;
+        camRight.y = 0;
+
+        movement = (camForward.normalized * v + camRight.normalized * h).normalized;
     }
 
     void MovePlayer()
     {
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
-    }
-
-    void HandleCleanUpInput()
-    {
-        if (Input.GetKeyDown(cleanUpKey) && currentTrash != null && cleanUpSlider != null)
+        if (movement.magnitude >= 0.1f)
         {
-            StartCoroutine(CleanUpCoroutine());
-        }
-    }
+            rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
 
-    IEnumerator CleanUpCoroutine()
-    {
-        // Show slider and reset value
-        cleanUpSlider.gameObject.SetActive(true);
-        cleanUpSlider.value = initialSliderValue;
-
-        // Gradually decrease the slider
-        while (cleanUpSlider.value > 0)
-        {
-            cleanUpSlider.value -= Time.deltaTime * cleanUpSpeed;
-            yield return null; // wait for next frame
-        }
-
-        // Destroy trash when slider reaches 0
-        Destroy(currentTrash);
-        currentTrash = null;
-
-        // Hide slider after cleanup
-        cleanUpSlider.gameObject.SetActive(false);
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Trash"))
-        {
-            currentTrash = other.gameObject;
+            // Rotate towards movement direction
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
+            rb.MoveRotation(targetRotation);
         }
     }
 }
