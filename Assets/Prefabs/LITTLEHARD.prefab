@@ -122,3 +122,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cleanUpTime: 10
+  points: 13

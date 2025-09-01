@@ -1,18 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // ✅ Needed for TextMeshProUGUI
 using System.Collections;
 
 public class TrashCleaner : MonoBehaviour
 {
-    
-    // The slider parameters
-
     public Slider cleanUpSlider; 
     public KeyCode cleanUpKey = KeyCode.E;
     private Trash currentTrash;
 
+    public TextMeshProUGUI trashCountText; 
     private Coroutine cleaningCoroutine;
-    private int countTrash;
+    public static int countTrash; // total score
 
     void Start()
     {
@@ -21,10 +20,13 @@ public class TrashCleaner : MonoBehaviour
         {
             cleanUpSlider.gameObject.SetActive(false);
         }
+
+        if (trashCountText != null)
+        {
+            trashCountText.text = "Trash: " + countTrash;
+        }
     }
 
-
-    // We basically clean the Trash Object (which is too destroy it, don't know how the Coroutine stuff happens)  
     void Update()
     {
         if (currentTrash != null && cleanUpSlider != null)
@@ -48,11 +50,12 @@ public class TrashCleaner : MonoBehaviour
             }
         }
 
-        Debug.Log(countTrash);
+        // Always update UI
+        if (trashCountText != null)
+        {
+            trashCountText.text = "Trash: " + countTrash;
+        }
     }
-
-
-    // This is the method that activates once the clean keybind is pressed
 
     IEnumerator CleanUpCoroutine()
     {
@@ -71,10 +74,10 @@ public class TrashCleaner : MonoBehaviour
         // Complete cleanup if timer reached zero
         if (cleanUpSlider.value <= 0)
         {
+            // ✅ Add score based on trash "weight"
+            countTrash += currentTrash.points; 
 
-            // The count trash adds only one point, we can add more points if hard level trash is collected
             Destroy(currentTrash.gameObject);
-            countTrash++;
             currentTrash = null;
             cleanUpSlider.gameObject.SetActive(false);
         }
@@ -82,11 +85,8 @@ public class TrashCleaner : MonoBehaviour
         cleaningCoroutine = null;
     }
 
-    // Trigger check for the Trash Object
-
     void OnTriggerEnter(Collider other)
     {
-        // Detect when player enters trash area
         if (other.CompareTag("Trash"))
         {
             currentTrash = other.GetComponent<Trash>();
@@ -95,13 +95,11 @@ public class TrashCleaner : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        // Clean up when player leaves trash area
         if (other.CompareTag("Trash") && currentTrash != null && other.gameObject == currentTrash.gameObject)
         {
             currentTrash = null;
             cleanUpSlider.gameObject.SetActive(false);
 
-            // Stop any active cleaning process
             if (cleaningCoroutine != null)
             {
                 StopCoroutine(cleaningCoroutine);
