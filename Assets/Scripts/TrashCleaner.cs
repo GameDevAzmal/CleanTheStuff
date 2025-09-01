@@ -12,6 +12,7 @@ public class TrashCleaner : MonoBehaviour
 
     void Start()
     {
+        // Hide cleanup UI initially
         if (cleanUpSlider != null)
         {
             cleanUpSlider.gameObject.SetActive(false);
@@ -22,17 +23,17 @@ public class TrashCleaner : MonoBehaviour
     {
         if (currentTrash != null && cleanUpSlider != null)
         {
-            // Start cleaning when button is held
             if (Input.GetKey(cleanUpKey))
             {
-                if (cleaningCoroutine == null) // start once
+                // Start cleaning process (only once)
+                if (cleaningCoroutine == null)
                 {
                     cleaningCoroutine = StartCoroutine(CleanUpCoroutine());
                 }
             }
             else
             {
-                // Stop cleaning when button released
+                // Stop cleaning when key released
                 if (cleaningCoroutine != null)
                 {
                     StopCoroutine(cleaningCoroutine);
@@ -44,16 +45,19 @@ public class TrashCleaner : MonoBehaviour
 
     IEnumerator CleanUpCoroutine()
     {
+        // Setup cleanup UI
         cleanUpSlider.gameObject.SetActive(true);
         cleanUpSlider.maxValue = currentTrash.cleanUpTime;
         cleanUpSlider.value = currentTrash.cleanUpTime;
 
+        // Countdown while key is held
         while (cleanUpSlider.value > 0 && Input.GetKey(cleanUpKey))
         {
             cleanUpSlider.value -= Time.deltaTime;
             yield return null;
         }
 
+        // Complete cleanup if timer reached zero
         if (cleanUpSlider.value <= 0)
         {
             Destroy(currentTrash.gameObject);
@@ -66,6 +70,7 @@ public class TrashCleaner : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        // Detect when player enters trash area
         if (other.CompareTag("Trash"))
         {
             currentTrash = other.GetComponent<Trash>();
@@ -74,11 +79,13 @@ public class TrashCleaner : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        // Clean up when player leaves trash area
         if (other.CompareTag("Trash") && currentTrash != null && other.gameObject == currentTrash.gameObject)
         {
             currentTrash = null;
             cleanUpSlider.gameObject.SetActive(false);
 
+            // Stop any active cleaning process
             if (cleaningCoroutine != null)
             {
                 StopCoroutine(cleaningCoroutine);

@@ -29,7 +29,7 @@ public class TrashSpawner : MonoBehaviour
 
     void Start()
     {
-       
+        // Start the continuous spawning process
         StartCoroutine(SpawnLoop());
     }
 
@@ -37,6 +37,7 @@ public class TrashSpawner : MonoBehaviour
     {
         while (true)
         {
+            // Wait random time between spawns
             yield return new WaitForSeconds(Random.Range(minSpawnTime, maxSpawnTime));
             TrySpawnTrash();
         }
@@ -46,7 +47,7 @@ public class TrashSpawner : MonoBehaviour
     {
         if (spawnPoints.Length == 0 || trashTypes.Length == 0) return;
 
-       
+        // Pick random spawn point
         int index = Random.Range(0, spawnPoints.Length);
         SpawnPoint sp = spawnPoints[index];
 
@@ -58,7 +59,7 @@ public class TrashSpawner : MonoBehaviour
                 GameObject spawnedTrash = Instantiate(trashPrefab, sp.point.position, sp.point.rotation);
                 sp.isOccupied = true;
 
-               
+                // Setup cleanup callback to free spawn point when trash is destroyed
                 Trash trashComp = spawnedTrash.GetComponent<Trash>();
                 if (trashComp != null)
                 {
@@ -66,7 +67,7 @@ public class TrashSpawner : MonoBehaviour
                 }
                 else
                 {
-                   
+                    // Fallback: auto-destroy after 10 seconds if no Trash component
                     Destroy(spawnedTrash, 10f); 
                     sp.isOccupied = false;
                 }
@@ -76,6 +77,7 @@ public class TrashSpawner : MonoBehaviour
 
     GameObject GetRandomTrashPrefab()
     {
+        // Calculate total spawn chance for weighted random selection
         float total = 0f;
         foreach (TrashType type in trashTypes)
         {
@@ -85,6 +87,7 @@ public class TrashSpawner : MonoBehaviour
         float randomValue = Random.Range(0, total);
         float cumulative = 0f;
 
+        // Find which trash type the random value selects
         foreach (TrashType type in trashTypes)
         {
             cumulative += type.spawnChance;
