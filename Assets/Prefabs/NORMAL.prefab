@@ -121,8 +121,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4027883143c5bb4478e289a86a6e9094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
-  cleanUpTime: 2
-=======
-  cleanUpTime: 9
->>>>>>> a70535223a9925ba01265ad085f5a99f19bc7079
+  cleanUpTime: 5
