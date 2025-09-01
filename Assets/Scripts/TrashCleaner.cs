@@ -4,6 +4,9 @@ using System.Collections;
 
 public class TrashCleaner : MonoBehaviour
 {
+    
+    // The slider parameters
+
     public Slider cleanUpSlider; 
     public KeyCode cleanUpKey = KeyCode.E;
     private Trash currentTrash;
@@ -18,6 +21,8 @@ public class TrashCleaner : MonoBehaviour
         }
     }
 
+
+    // We basically clean the Trash Object (which is too destroy it, don't know how the Coroutine stuff happens)  
     void Update()
     {
         if (currentTrash != null && cleanUpSlider != null)
@@ -42,6 +47,9 @@ public class TrashCleaner : MonoBehaviour
         }
     }
 
+
+    // This is the method that activates once the clean keybind is pressed
+
     IEnumerator CleanUpCoroutine()
     {
         cleanUpSlider.gameObject.SetActive(true);
@@ -63,6 +71,8 @@ public class TrashCleaner : MonoBehaviour
 
         cleaningCoroutine = null;
     }
+
+    // Trigger check for the Trash Object
 
     void OnTriggerEnter(Collider other)
     {
