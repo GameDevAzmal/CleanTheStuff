@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 
+// Points script
+
 public class COINS : MonoBehaviour
 {
     public GameObject panel;
