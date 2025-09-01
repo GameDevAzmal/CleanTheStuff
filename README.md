@@ -1,2 +1,2 @@
-# 3RD-person-game
-rf
+# CleanTheStuf
+This is a game where we clean the trash and gain the coins or gold or silver or dimonds etc... by putting into the trash with that we can buy or upgrade our stuff 
