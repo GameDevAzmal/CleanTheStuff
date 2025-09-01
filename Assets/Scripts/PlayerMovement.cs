@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    // This is the player variables 
     public float speed = 5f;
     public Rigidbody rb;
     private Vector3 movement;
 
+
+    // Camera of the player
     public Transform cameraTransform;
 
     void Start()
@@ -23,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
     }
 
+
+    // Handle movement 
     void HandleMovementInput()
     {
         float h = Input.GetAxisRaw("Horizontal");
@@ -38,6 +44,8 @@ public class PlayerMovement : MonoBehaviour
         movement = (camForward.normalized * v + camRight.normalized * h).normalized;
     }
 
+
+    // Simple player movement script
     void MovePlayer()
     {
         if (movement.magnitude >= 0.1f)

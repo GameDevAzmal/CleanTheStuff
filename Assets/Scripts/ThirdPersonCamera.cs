@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
 {  
+
+    // This is the Camera Parameters
+
     public Transform player;      
     public float distance = 5f;  
     public float height = 2f;     
@@ -11,11 +14,12 @@ public class ThirdPersonCamera : MonoBehaviour
 
     void Start()
     {
-       
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-
+    
+    // Updating the Camera based on the mouse movement (I think this camera moves a little late idk lol)
     void LateUpdate()
     {
         
