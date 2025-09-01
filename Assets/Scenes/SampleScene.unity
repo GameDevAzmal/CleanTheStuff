@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1177679748}
-  distance: 5
+  distance: 7
   height: 6
   sensitivity: 2
 --- !u!1 &368409503
@@ -1356,7 +1356,7 @@ GameObject:
   - component: {fileID: 1291535802}
   - component: {fileID: 1291535801}
   - component: {fileID: 1291535800}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1818,6 +1818,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2108217550}
   - component: {fileID: 2108217549}
+  - component: {fileID: 2108217551}
   m_Layer: 0
   m_Name: TrashSpawner
   m_TagString: Untagged
@@ -1872,12 +1873,31 @@ Transform:
   m_GameObject: {fileID: 2108217548}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.35, y: 0.34, z: 18.13}
+  m_LocalPosition: {x: 21.3, y: 0.1, z: 30.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2108217551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108217548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cad973edac212f4dae4f59da46ad67d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trashTypes:
+  - prefab: {fileID: 4045562900591284205, guid: c2152f09c299c984da6901f984ff0f2d, type: 3}
+    spawnChance: 0
+  areaSize: {x: 22, y: 0, z: 28.63}
+  areaCenter: {x: 0, y: 0, z: 0}
+  minSpawnTime: 3
+  maxSpawnTime: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
