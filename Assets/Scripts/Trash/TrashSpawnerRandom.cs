@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-// The is the same TrashSpawner Script but just using a Randomize approach
-
 public class TrashSpawnerRandom : MonoBehaviour
 {
     [System.Serializable]
@@ -16,12 +14,17 @@ public class TrashSpawnerRandom : MonoBehaviour
     public TrashType[] trashTypes;
 
     [Header("Spawn Area")]
-    public Vector3 areaSize = new Vector3(10, 0, 10); // width, height, depth of spawn area
-    public Vector3 areaCenter = Vector3.zero;         // offset from spawner
+    public Vector3 areaSize = new Vector3(10, 0, 10); 
+    public Vector3 areaCenter = Vector3.zero;         
 
     [Header("Timing")]
     public float minSpawnTime = 2f;
     public float maxSpawnTime = 5f;
+
+    [Header("Limit")]
+    public int maxSpawns = 10; // fixed number of spawns
+
+    private int currentSpawnCount = 0;
 
     void Start()
     {
@@ -30,7 +33,7 @@ public class TrashSpawnerRandom : MonoBehaviour
 
     IEnumerator SpawnLoop()
     {
-        while (true)
+        while (currentSpawnCount < maxSpawns) // stop after reaching limit
         {
             yield return new WaitForSeconds(Random.Range(minSpawnTime, maxSpawnTime));
             TrySpawnTrash();
@@ -39,11 +42,14 @@ public class TrashSpawnerRandom : MonoBehaviour
 
     void TrySpawnTrash()
     {
+        if (currentSpawnCount >= maxSpawns) return;
+
         GameObject trashPrefab = GetRandomTrashPrefab();
         if (trashPrefab != null)
         {
             Vector3 randomPos = GetRandomPosition();
             Instantiate(trashPrefab, randomPos, Quaternion.identity);
+            currentSpawnCount++; // count each spawn
         }
     }
 
@@ -75,13 +81,12 @@ public class TrashSpawnerRandom : MonoBehaviour
         return null;
     }
 
-    // 🔹 Draw the spawn box in the editor
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = new Color(0f, 1f, 0f, 0.3f); // semi-transparent green
+        Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
         Gizmos.DrawCube(transform.position + areaCenter, areaSize);
 
-        Gizmos.color = Color.green; // outline
+        Gizmos.color = Color.green;
         Gizmos.DrawWireCube(transform.position + areaCenter, areaSize);
     }
 }

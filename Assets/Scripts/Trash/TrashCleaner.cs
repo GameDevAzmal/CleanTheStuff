@@ -63,6 +63,13 @@ public class TrashCleaner : MonoBehaviour
         {
             string trashType = currentTrash.name.Replace("(Clone)", "");
 
+            // if (BackpackManager.Instance.IsBackpackFull())
+            // {
+            //     BackpackManager.Instance.ShowNotification("Backpack Full!");
+            //     cleanUpSlider.gameObject.SetActive(false);
+            //     yield break;
+            // }
+
             if (trashCounts.ContainsKey(trashType))
                 trashCounts[trashType]++;
             else
