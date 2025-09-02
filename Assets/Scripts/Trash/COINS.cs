@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
-
-// Points script
+using System.Text; // for StringBuilder
 
 public class COINS : MonoBehaviour
 {
@@ -27,7 +26,17 @@ public class COINS : MonoBehaviour
 
         if (isPanelOpen && coinsText != null)
         {
-            coinsText.text = "Points: " + TrashCleaner.totalPoints;
+            // Build the text
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Points: " + TrashCleaner.totalPoints);
+
+            // Also show breakdown of collected trash
+            foreach (var kvp in TrashCleaner.trashCounts)
+            {
+                sb.AppendLine(kvp.Key + " x" + kvp.Value);
+            }
+
+            coinsText.text = sb.ToString();
         }
     }
 }
