@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4849973878560826437}
   - component: {fileID: -8816446274998146235}
   m_Layer: 0
-  m_Name: HARD
+  m_Name: BLUE
   m_TagString: Trash
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 90ff189b9192e8346b7a18a39577f6ba, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

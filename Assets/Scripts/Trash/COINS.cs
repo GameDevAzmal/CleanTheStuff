@@ -27,7 +27,7 @@ public class COINS : MonoBehaviour
 
         if (isPanelOpen && coinsText != null)
         {
-            coinsText.text = "Trash Collected: " + TrashCleaner.countTrash;
+            coinsText.text = "Points: " + TrashCleaner.totalPoints;
         }
     }
 }

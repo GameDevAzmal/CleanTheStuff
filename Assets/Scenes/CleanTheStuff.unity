@@ -1560,6 +1560,51 @@ MonoBehaviour:
   cleanUpSlider: {fileID: 156816222}
   cleanUpKey: 101
   trashCountText: {fileID: 189937697}
+--- !u!1 &1196300655
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1196300657}
+  - component: {fileID: 1196300656}
+  m_Layer: 0
+  m_Name: GameManger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1196300656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196300655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3f7358829424e942845c1fb93ea5f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backpackCapacity: 10
+--- !u!4 &1196300657
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196300655}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 504.65698, y: -216.04057, z: 331.90024}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1291535799
 GameObject:
   m_ObjectHideFlags: 0
@@ -2259,8 +2304,8 @@ MonoBehaviour:
     isOccupied: 0
   - point: {fileID: 1332898148}
     isOccupied: 0
-  minSpawnTime: 2
-  maxSpawnTime: 10
+  minSpawnTime: 1
+  maxSpawnTime: 2
 --- !u!4 &2108217550
 Transform:
   m_ObjectHideFlags: 0
@@ -2290,7 +2335,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trashTypes:
   - prefab: {fileID: 4045562900591284205, guid: fe4c021290d90c044877a7798a5a4c9a, type: 3}
-    spawnChance: 0
+    spawnChance: 5
+  - prefab: {fileID: 4045562900591284205, guid: 0f2d80d32b5569e478193694a335bbcf, type: 3}
+    spawnChance: 5
+  - prefab: {fileID: 4045562900591284205, guid: 9bf2da91b6164954c9ef7605967044c3, type: 3}
+    spawnChance: 5
+  - prefab: {fileID: 4045562900591284205, guid: b0551b0621537874e830ba3fdc55587d, type: 3}
+    spawnChance: 5
   areaSize: {x: 22, y: 0, z: 28.63}
   areaCenter: {x: 0, y: 0, z: 0}
   minSpawnTime: 3
@@ -2309,3 +2360,4 @@ SceneRoots:
   - {fileID: 2108217550}
   - {fileID: 639826592}
   - {fileID: 1763557564}
+  - {fileID: 1196300657}

@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro; // ✅ Needed for TextMeshProUGUI
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class TrashCleaner : MonoBehaviour
 {
@@ -11,7 +13,11 @@ public class TrashCleaner : MonoBehaviour
 
     public TextMeshProUGUI trashCountText; 
     private Coroutine cleaningCoroutine;
-    public static int countTrash; // total score
+    public Dictionary<string, int> trashCounts = new Dictionary<string, int>();
+
+    public static int backpackCapacity = 1;
+    public static int totalPoints; // total score
+    // private TrashManager trashManager;
 
     void Start()
     {
@@ -23,8 +29,9 @@ public class TrashCleaner : MonoBehaviour
 
         if (trashCountText != null)
         {
-            trashCountText.text = "Trash: " + countTrash;
+            trashCountText.text = $"Trash: {GetTotalTrashCollected()}";
         }
+
     }
 
     void Update()
@@ -53,12 +60,13 @@ public class TrashCleaner : MonoBehaviour
         // Always update UI
         if (trashCountText != null)
         {
-            trashCountText.text = "Trash: " + countTrash;
+            trashCountText.text = $"Trash: {GetTotalTrashCollected()}";
         }
     }
 
     IEnumerator CleanUpCoroutine()
     {
+        if (currentTrash == null) yield break;
         // Setup cleanup UI
         cleanUpSlider.gameObject.SetActive(true);
         cleanUpSlider.maxValue = currentTrash.cleanUpTime;
@@ -67,22 +75,61 @@ public class TrashCleaner : MonoBehaviour
         // Countdown while key is held
         while (cleanUpSlider.value > 0 && Input.GetKey(cleanUpKey))
         {
-            cleanUpSlider.value -= Time.deltaTime;
-            yield return null;
+
+            if (GetTotalTrashCollected() >= backpackCapacity)
+            {
+                Debug.Log("Backpack full!");
+                cleanUpSlider.gameObject.SetActive(false);
+                yield break;
+            }
+            else
+            {
+                cleanUpSlider.value -= Time.deltaTime;
+                yield return null;
+            }
         }
 
-        // Complete cleanup if timer reached zero
+        // This is basically keeps track of the trash in the backpack and 
         if (cleanUpSlider.value <= 0)
         {
-            // ✅ Add score based on trash "weight"
-            countTrash += currentTrash.points; 
+            if (GetTotalTrashCollected() >= backpackCapacity)
+            {
+                Debug.Log("Backpack full!");
+            }
 
-            Destroy(currentTrash.gameObject);
+            else
+            {
+                // string trashType = currentTrash.name;
+                string trashType = currentTrash.name.Replace("(Clone)", "");
+
+                if (trashCounts.ContainsKey(trashType))
+                {
+                    trashCounts[trashType]++;
+                }
+                else
+                {
+                    trashCounts[trashType] = 1;
+                }
+
+                totalPoints += currentTrash.points;
+                Debug.Log($"Collected {trashType}, total = {trashCounts[trashType]}");
+                Debug.Log($"Total trash: {totalPoints}");
+                Destroy(currentTrash.gameObject);
+            }
+
+            
+
             currentTrash = null;
             cleanUpSlider.gameObject.SetActive(false);
         }
 
         cleaningCoroutine = null;
+    }
+
+    // Gets total no of trash in the trashCounts dictionary
+    public int GetTotalTrashCollected()
+    {
+        return trashCounts.Values.Sum();
     }
 
     void OnTriggerEnter(Collider other)
