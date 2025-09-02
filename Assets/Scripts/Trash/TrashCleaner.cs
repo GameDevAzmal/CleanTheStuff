@@ -1,17 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // ✅ Needed for TextMeshProUGUI
 using System.Collections;
+using TMPro;
 
 public class TrashCleaner : MonoBehaviour
 {
     public Slider cleanUpSlider; 
     public KeyCode cleanUpKey = KeyCode.E;
     private Trash currentTrash;
-
-    public TextMeshProUGUI trashCountText; 
+    public TextMeshProUGUI trashCount;
     private Coroutine cleaningCoroutine;
-    public static int countTrash; // total score
+    public static int countTrash;
 
     void Start()
     {
@@ -19,11 +18,6 @@ public class TrashCleaner : MonoBehaviour
         if (cleanUpSlider != null)
         {
             cleanUpSlider.gameObject.SetActive(false);
-        }
-
-        if (trashCountText != null)
-        {
-            trashCountText.text = "Trash: " + countTrash;
         }
     }
 
@@ -50,34 +44,30 @@ public class TrashCleaner : MonoBehaviour
             }
         }
 
-        // Always update UI
-        if (trashCountText != null)
-        {
-            trashCountText.text = "Trash: " + countTrash;
-        }
+        trashCount.text = "Trash : " + countTrash;
     }
 
     IEnumerator CleanUpCoroutine()
     {
-        // Setup cleanup UI
+        
         cleanUpSlider.gameObject.SetActive(true);
         cleanUpSlider.maxValue = currentTrash.cleanUpTime;
-        cleanUpSlider.value = currentTrash.cleanUpTime;
 
-        // Countdown while key is held
-        while (cleanUpSlider.value > 0 && Input.GetKey(cleanUpKey))
+        // Start at 0 (instead of full)
+        cleanUpSlider.value = 0f;
+
+        // Increase slider while key is held
+        while (cleanUpSlider.value < cleanUpSlider.maxValue && Input.GetKey(cleanUpKey))
         {
-            cleanUpSlider.value -= Time.deltaTime;
+            cleanUpSlider.value += Time.deltaTime;
             yield return null;
         }
 
-        // Complete cleanup if timer reached zero
-        if (cleanUpSlider.value <= 0)
+        // Complete cleanup if slider reached max
+        if (cleanUpSlider.value >= cleanUpSlider.maxValue)
         {
-            // ✅ Add score based on trash "weight"
-            countTrash += currentTrash.points; 
-
             Destroy(currentTrash.gameObject);
+            countTrash++;
             currentTrash = null;
             cleanUpSlider.gameObject.SetActive(false);
         }
@@ -87,6 +77,7 @@ public class TrashCleaner : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        // Detect when player enters trash area
         if (other.CompareTag("Trash"))
         {
             currentTrash = other.GetComponent<Trash>();
@@ -95,11 +86,13 @@ public class TrashCleaner : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        // Clean up when player leaves trash area
         if (other.CompareTag("Trash") && currentTrash != null && other.gameObject == currentTrash.gameObject)
         {
             currentTrash = null;
             cleanUpSlider.gameObject.SetActive(false);
 
+            // Stop any active cleaning process
             if (cleaningCoroutine != null)
             {
                 StopCoroutine(cleaningCoroutine);
