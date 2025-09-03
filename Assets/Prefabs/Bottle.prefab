@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4849973878560826437}
   - component: {fileID: -8816446274998146235}
   m_Layer: 0
-  m_Name: Sticky Gum
+  m_Name: Bottle
   m_TagString: Trash
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

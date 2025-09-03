@@ -4,13 +4,12 @@ using System.Collections;
 
 public class TrashCleaner : MonoBehaviour
 {
+    [Header("Collection Settings")]
     public Slider cleanUpSlider; 
     public KeyCode cleanUpKey = KeyCode.E;
+    
     private Trash currentTrash;
     private Coroutine cleaningCoroutine;
-
-    public static System.Collections.Generic.Dictionary<string, int> trashCounts = new System.Collections.Generic.Dictionary<string, int>();
-    public static int totalPoints; 
 
     void Start()
     {
@@ -33,6 +32,7 @@ public class TrashCleaner : MonoBehaviour
                 {
                     StopCoroutine(cleaningCoroutine);
                     cleaningCoroutine = null;
+                    cleanUpSlider.gameObject.SetActive(false);
                 }
             }
         }
@@ -42,16 +42,30 @@ public class TrashCleaner : MonoBehaviour
     {
         if (currentTrash == null) yield break;
 
+        // Check if we can add this item to backpack before starting
+        string itemName = currentTrash.GetCleanName();
+        bool canAdd = !BackpackManager.Instance.IsBackpackFull();
+        
+        if (!canAdd)
+        {
+            BackpackManager.Instance.ShowNotification("Backpack Full!");
+            cleaningCoroutine = null;
+            yield break;
+        }
+
         cleanUpSlider.gameObject.SetActive(true);
         cleanUpSlider.maxValue = currentTrash.cleanUpTime;
         cleanUpSlider.value = 0f;
 
+        // Progress the cleaning
         while (cleanUpSlider.value < cleanUpSlider.maxValue && Input.GetKey(cleanUpKey))
         {
+            // Double-check backpack space during cleaning
             if (BackpackManager.Instance.IsBackpackFull())
             {
                 BackpackManager.Instance.ShowNotification("Backpack Full!");
                 cleanUpSlider.gameObject.SetActive(false);
+                cleaningCoroutine = null;
                 yield break;
             }
 
@@ -59,28 +73,27 @@ public class TrashCleaner : MonoBehaviour
             yield return null;
         }
 
+        // If cleaning completed
         if (cleanUpSlider.value >= cleanUpSlider.maxValue)
         {
-            string trashType = currentTrash.name.Replace("(Clone)", "");
+            // Try to add item to backpack
+            bool success = BackpackManager.Instance.TryAddItem(
+                itemName, 
+                currentTrash.cashValue, 
+                currentTrash.stackLimit
+            );
 
-            // if (BackpackManager.Instance.IsBackpackFull())
-            // {
-            //     BackpackManager.Instance.ShowNotification("Backpack Full!");
-            //     cleanUpSlider.gameObject.SetActive(false);
-            //     yield break;
-            // }
-
-            if (trashCounts.ContainsKey(trashType))
-                trashCounts[trashType]++;
+            if (success)
+            {
+                // Destroy the trash object
+                Destroy(currentTrash.gameObject);
+                currentTrash = null;
+            }
             else
-                trashCounts[trashType] = 1;
+            {
+                BackpackManager.Instance.ShowNotification("Backpack Full!");
+            }
 
-            totalPoints += currentTrash.points;
-
-            BackpackManager.Instance.ShowNotification($"Collected {trashType} +{currentTrash.points} points");
-
-            Destroy(currentTrash.gameObject);
-            currentTrash = null;
             cleanUpSlider.gameObject.SetActive(false);
         }
 
@@ -91,7 +104,11 @@ public class TrashCleaner : MonoBehaviour
     {
         if (other.CompareTag("Trash"))
         {
-            currentTrash = other.GetComponent<Trash>();
+            Trash trash = other.GetComponent<Trash>();
+            if (trash != null)
+            {
+                currentTrash = trash;
+            }
         }
     }
 
