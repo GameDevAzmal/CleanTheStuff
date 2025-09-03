@@ -224,7 +224,7 @@ public class TrashCan : MonoBehaviour
         {
             if (IsItemCompatible(item.Key) && item.Value > 0)
             {
-                // Calculate cash
+            
                 int cashPerItem = GetCashValueForItem(item.Key);
                 int totalCash = cashPerItem * item.Value;
                 
@@ -232,7 +232,8 @@ public class TrashCan : MonoBehaviour
                 totalItemsDeposited += item.Value;
                 
                 itemsToRemove.Add(item.Key);
-
+                    
+               
                 if (showDebugLogs)
                     Debug.Log($"Will deposit {item.Value} x {item.Key} for ${totalCash}");
             }

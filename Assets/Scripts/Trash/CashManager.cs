@@ -7,6 +7,7 @@ public class CashManager : MonoBehaviour
     public static CashManager Instance;
 
     [Header("Cash Settings")]
+
     public int startingCash = 0;
     
     [Header("UI References")]
@@ -38,6 +39,8 @@ public class CashManager : MonoBehaviour
 
     void Start()
     {
+        startingCash = 0;
+        currentCash = startingCash;
         // Load saved cash (if you have save system later)
         LoadCash();
         UpdateCashUI();
