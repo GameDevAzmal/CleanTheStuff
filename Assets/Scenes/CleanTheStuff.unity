@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4798aee856a4b4438f744b8323ed9fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceptsRecyclable: 1
+  acceptsRecyclable: 0
   interactKey: 101
   depositTime: 1
   depositSlider: {fileID: 1554971862}
@@ -276,7 +276,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 03c604408ae1e084dbb9917d1a04179f, type: 2}
+  - {fileID: 2100000, guid: c03f204f5d928964d9297163b5d1b942, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1560,7 +1560,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 03c604408ae1e084dbb9917d1a04179f, type: 2}
+  - {fileID: 2100000, guid: 7eba5ec440fb77245ba0602646269ca2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3713,6 +3713,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trashTypes:
   - prefab: {fileID: 4045562900591284205, guid: 655bee52433244445a392d2c55869f07, type: 3}
+    spawnChance: 5
+  - prefab: {fileID: 4045562900591284205, guid: 1aa137355b26d084d80cb65271790ce7, type: 3}
     spawnChance: 5
   areaSize: {x: 39, y: 0, z: 42.3}
   areaCenter: {x: 0, y: 0, z: 0}

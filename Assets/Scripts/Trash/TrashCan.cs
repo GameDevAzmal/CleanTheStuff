@@ -105,37 +105,153 @@ public class TrashCan : MonoBehaviour
         if (showDebugLogs)
             Debug.Log($"Checking compatibility for: '{itemName}' with recyclable bin: {acceptsRecyclable}");
 
-        // TEMPORARY: Accept ALL items for testing
-        // Remove this after confirming the deposit system works
-        if (showDebugLogs)
-            Debug.Log($"TEMP: Accepting all items. Item '{itemName}' is compatible with bin (acceptsRecyclable: {acceptsRecyclable})");
-        return true;
-
-        /*
-        // ORIGINAL CODE - Uncomment after testing
+        // We need to check the actual recyclable property from the trash items
+        // Since we only have the item name, we need to track this information
         
-        // Recyclable items (case insensitive)
-        string[] recyclableItems = { "bottle", "can", "paper", "cardboard", "plastic" };
-        // Non-recyclable items
-        string[] nonRecyclableItems = { "food", "diaper", "cigarette", "gum", "organic" };
-
-        string itemLower = itemName.ToLower();
+        // Check if this item type is recyclable based on the trash data
+        bool itemIsRecyclable = GetItemRecyclableStatus(itemName);
         
-        bool itemIsRecyclable = System.Array.Exists(recyclableItems, x => itemLower.Contains(x));
-        bool itemIsNonRecyclable = System.Array.Exists(nonRecyclableItems, x => itemLower.Contains(x));
-
         if (showDebugLogs)
-        {
-            Debug.Log($"Item '{itemName}' -> Recyclable: {itemIsRecyclable}, Non-Recyclable: {itemIsNonRecyclable}");
-        }
+            Debug.Log($"Item '{itemName}' is recyclable: {itemIsRecyclable}, Bin accepts recyclable: {acceptsRecyclable}");
 
-        // If this bin accepts recyclable and item is recyclable
+        // Match the item type with the bin type
         if (acceptsRecyclable && itemIsRecyclable) return true;
-        // If this bin accepts non-recyclable and item is non-recyclable  
-        if (!acceptsRecyclable && itemIsNonRecyclable) return true;
+        if (!acceptsRecyclable && !itemIsRecyclable) return true;
 
         return false;
-        */
+    }
+
+    // Helper method to determine if an item type is recyclable
+    // This should match the isRecyclable setting from your Trash.cs prefabs
+    bool GetItemRecyclableStatus(string itemName)
+    {
+        // Configure this based on your actual trash prefabs
+        // These should match the trashName values in your Trash.cs components
+        
+        Dictionary<string, bool> itemRecyclableStatus = new Dictionary<string, bool>()
+        {
+            // RECYCLABLE ITEMS (isRecyclable = true in Trash.cs)
+            // Paper Products
+            { "Newspaper", true },
+            { "Magazine", true },
+            { "Office Paper", true },
+            { "Scrap Paper", true },
+            { "Cardboard Box", true },
+            { "Clean Paper Cup", true },
+            
+            // Plastic Items
+            { "Plastic Bottle", true },
+            { "Water Bottle", true },
+            { "Soda Bottle", true },
+            { "Plastic Container", true },
+            { "Clean Plastic Bag", true },
+            
+            // Metal Items
+            { "Aluminum Can", true },
+            { "Soda Can", true },
+            { "Beer Can", true },
+            { "Metal Can", true },
+            { "Food Can", true },
+            { "Steel Can", true },
+            
+            // Glass Items
+            { "Glass Bottle", true },
+            { "Wine Bottle", true },
+            { "Beer Bottle", true },
+            { "Glass Jar", true },
+            
+            // Generic recyclables
+            { "Bottle", true },
+            { "Can", true },
+            { "Paper", true },
+            { "Cardboard", true },
+            
+            // NON-RECYCLABLE ITEMS (isRecyclable = false in Trash.cs)
+            // Food and Organic Waste
+            { "Food Waste", false },
+            { "Food Scraps", false },
+            { "Banana Peel", false },
+            { "Apple Core", false },
+            { "Leftover Food", false },
+            
+            // Contaminated Paper Products
+            { "Used Tissue", false },
+            { "Dirty Paper Cup", false },
+            { "Greasy Paper", false },
+            { "Food-stained Paper", false },
+            
+            // Mixed Materials (cannot be separated)
+            { "Candy Wrapper", false },
+            { "Chip Bag", false },
+            { "Foil Wrapper", false },
+            { "Metallized Plastic", false },
+            
+            // Sanitary and Medical Items
+            { "Diaper", false },
+            { "Used Bandage", false },
+            { "Medical Waste", false },
+            { "Syringe", false },
+            { "Cotton Swab", false },
+            
+            // Small and Problematic Items
+            { "Cigarette Butt", false },
+            { "Gum", false },
+            { "Straw", false },
+            { "Plastic Utensils", false },
+            { "Toothpick", false },
+            
+            // Electronics (need special e-waste recycling)
+            { "Battery", false },
+            { "Phone", false },
+            { "Electronics", false },
+            { "Circuit Board", false },
+            { "Old Phone", false },
+            
+            // Hazardous Materials
+            { "Paint Can", false },
+            { "Chemical Container", false },
+            { "Motor Oil", false },
+            { "Pesticide Bottle", false },
+            { "Cleaning Product", false },
+            
+            // Textiles and Fabrics
+            { "Old Clothes", false },
+            { "Fabric Scraps", false },
+            { "Shoes", false },
+            { "Carpet Pieces", false },
+            
+            // Other Non-recyclables
+            { "Ceramic", false },
+            { "Broken Glass", false },
+            { "Mirror", false },
+            { "Light Bulb", false },
+            { "Styrofoam", false }
+        };
+
+        // Check exact match first
+        if (itemRecyclableStatus.ContainsKey(itemName))
+        {
+            if (showDebugLogs)
+                Debug.Log($"Found exact match: '{itemName}' is recyclable: {itemRecyclableStatus[itemName]}");
+            return itemRecyclableStatus[itemName];
+        }
+
+        // Check partial matches (for items with (Clone) or variations)
+        string cleanName = itemName.Replace("(Clone)", "").Trim();
+        foreach (var kvp in itemRecyclableStatus)
+        {
+            if (cleanName.Contains(kvp.Key) || kvp.Key.Contains(cleanName))
+            {
+                if (showDebugLogs)
+                    Debug.Log($"Found partial match: '{itemName}' matches '{kvp.Key}' - recyclable: {kvp.Value}");
+                return kvp.Value;
+            }
+        }
+
+        // Default fallback for unknown items
+        if (showDebugLogs)
+            Debug.Log($"Unknown item '{itemName}' - defaulting to NON-recyclable");
+        return false; // Default to non-recyclable if unknown
     }
 
     void StartDepositing()
@@ -224,7 +340,7 @@ public class TrashCan : MonoBehaviour
         {
             if (IsItemCompatible(item.Key) && item.Value > 0)
             {
-            
+                // Calculate cash
                 int cashPerItem = GetCashValueForItem(item.Key);
                 int totalCash = cashPerItem * item.Value;
                 
@@ -232,8 +348,7 @@ public class TrashCan : MonoBehaviour
                 totalItemsDeposited += item.Value;
                 
                 itemsToRemove.Add(item.Key);
-                    
-               
+
                 if (showDebugLogs)
                     Debug.Log($"Will deposit {item.Value} x {item.Key} for ${totalCash}");
             }
